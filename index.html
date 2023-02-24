@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        select, input[type="number"]{
+            width:100%;
+            height: 20px;
+            box-sizing:border-box;
+            border-style: none none solid none;
+          }
+      .button {
+        border: none;
+        padding: 16px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        transition-duration: 0.4s;
+        cursor: pointer;
+      }
+      
+      .button {
+        background-color: #FFB514; 
+        color: black; 
+      
+      }
+      
+      .button:hover {
+        background-color: #FFC505;
+        color: white;
+      }
+       </style>
+</head>
+<body>
+    <h1>Position Size Calculator</h1>
+  <form>
+    <label for="account-size" >Account size:</label><br>
+    <input type="number" id="account-size" name="account-size" ><br>
+    <label for="leverage" >Leverage:</label><br>
+    <input type="number" id="leverage" name="leverage" ><br>
+    <label for="risk-percentage">Risk %:</label><br>
+    <input type="number" id="risk-percentage" name="risk-percentage" ><br>
+    <label for="stop-loss">Stop loss %:</label><br>
+    <input type="number" id="stop-loss" name="stop-loss" ><br>
+    <br>
+    <button class="button" type="button" onclick="calculatePositionSize()">Calculate</button>
+  </form> 
+  <br>
+  <p>Loss value: <span id="stopout"></span></p>
+  <p>Trade Margin: <span id="trade-margin"></span></p>
+  <p>Position size: <span id="position-size"></span></p>
+  <p>Forex Lot size: <span id="lot-size"></span></p>
+  <script>
+    function calculatePositionSize() {
+      // Get the account size, risk percentage, and stop loss values from the form
+      var accountSize = document.getElementById("account-size").value;
+      var riskPercentage = document.getElementById("risk-percentage").value;
+      var leverage = document.getElementById("leverage").value;
+      var stopLoss = document.getElementById("stop-loss").value;
+
+      // Calculate the position size
+      var riskUSD = (accountSize * riskPercentage);
+      var riskPercent = (riskUSD / 100);
+      var sLev = (stopLoss * leverage);
+      var tradeSize = riskUSD / sLev;
+      var positionSize = (leverage * tradeSize);
+     
+      function lotSizing (riskPercent){
+          if (riskPercent < 5){
+            return 0.01;
+          } else {
+            return (0.01*(((riskPercent/5)+(riskPercent/((stopLoss*125)/100)/5))/2));
+          }
+      }
+   
+      // Display the position size
+      document.getElementById("stopout").innerHTML = '$'+riskPercent.toFixed(2);
+      document.getElementById("trade-margin").innerHTML = '$'+tradeSize.toFixed(2);
+      document.getElementById("position-size").innerHTML = '$'+positionSize.toFixed(2);
+      document.getElementById("lot-size").innerHTML = lotSizing(riskPercent).toFixed(2);
+    }
+  </script>
+  
+
+</body>
+</html>
